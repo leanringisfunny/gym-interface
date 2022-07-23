@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .space{
+            height:300px;
+        }
+        .container {
+            max-width: 560px;
+        }
+        .field-error {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+<div class="space"></div>
+<div class="container">
+    <div class="py-5 text-center">
+        <h2>welcome to gym</h2>
+    </div>
+</div>
+    <div class="col">
+        <button class="w-100 btn btn-secondary btn-lg"
+                onclick="location.href='/'"
+                th:onclick="|location.href='@{/member/add}'|"
+                type="button">회원등록</button>
+
+        <button class="w-100 btn btn-secondary btn-lg"
+                onclick="location.href='/'"
+                th:onclick="|location.href='@{/login}'|"
+                type="button">로그인</button>
+
+
+            <button class="w-100 btn btn-secondary btn-lg"
+                    onclick="location.href='/'"
+                    th:onclick="|location.href='@{/member/members}'|"
+                    type="button">회원목록</button>
+        </div>
+    </form>
+</div> <!-- /container -->
+</body>
