@@ -20,28 +20,34 @@ import java.util.Optional;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/login")
+//@RequestMapping("/login")
 public class LoginServiceController {
 
     private final MemberRepository memberRepository;
 
 
-    @GetMapping
-    public String loginForm (Model model){
-        model.addAttribute("loginForm",new LoginForm());
+    @GetMapping("/login")
+    public String loginForm(@ModelAttribute("loginForm") LoginForm loginForm){
+        //model.addAttribute("loginForm",new LoginForm());
         return "login/loginForm";
     }
 
 
-    @PostMapping
-    public String memberDetail(@ModelAttribute LoginForm loginForm, BindingResult bindingResult, Model model){
-        Long password = loginForm.getPassword();
+    @PostMapping("/login")
+    public String memberDetail(@ModelAttribute("loginForm") LoginForm loginForm, BindingResult bindingResult, Model model){
+
+        /*Long password = loginForm.getPassword();
         Optional<Member> foundPassword = memberRepository.findByPassword(password);
 
         Member member = foundPassword.get();
         if(member==null){
             bindingResult.reject("access Failed","입력하신 비밀번호와 일치하는 회원이 회원목록에 존재하지 않습니다.");
-        }
+        }*/
+        log.info("loginForm={}",loginForm);
+
+        Member member = new Member();
+        member.setPassword(loginForm.getPassword());
+        member.setName("쿠쿠");
         model.addAttribute("member",member);
         return "member/member";
     }

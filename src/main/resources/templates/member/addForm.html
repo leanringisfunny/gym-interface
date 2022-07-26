@@ -1,10 +1,75 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>회원등록</title>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 560px;
+        }
+        .field-error {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+    </style>
 </head>
+
 <body>
-회원등록
+<div class="container">
+    <div class="py-5 text-center">
+        <h2>회원 등록 </h2>
+    </div>
+
+
+    <!--    https://stackoverflow.com/questions/38710585/spring-boot-thymeleaf-in-intellij-cannot-resolve-vars/44804086#44804086-->
+    <!--    인텔리 제이 인식불가(빨간줄) 오류해결법 외부 변수 매핑 x 시 외부변수를 가져오지 못해서 생기는 오류이므로 thymesvar애너테이션 사용-->
+
+
+
+    <!--    /*@thymesVar id="signUpForm" type="toy.gym.domain.form.SignUpForm"*/-->
+    <form action="index.html" th:action th:object="${signUpForm}" method="post">
+        <div>
+            <label for="name">이름 입력</label>
+            <input type="name" id="name" th:field="*{name}" class="form-control" >
+<!--            th:errorclass="field-error">-->
+            <!--            <div class="field-error" th:errors="password" />-->
+        </div>
+
+        <div>
+            <label for="password">비밀번호 입력</label>
+            <input type="password" id="password" th:field="*{password}" class="form-control" th:errorclass="field-error">
+<!--                       field-error <div class="field-error" th:errors="password" />-->
+        </div>
+
+
+<div>
+    <!--/*@thymesVar id="subscribeTypes" type="toy.gym.domain.member.Subscribe[]"*/-->
+        <div> 구독권</div>
+
+        <div th:each="type :${subscribeTypes}" class="form-check form-check-inline">
+            <input type="radio" th:field="*{subscribe}" th:value="${type.name()}" class="form-check-input">
+            <label th:for="${#ids.prev('subscribe')}" th:text="${type.month}" class="form-check-label">
+                1개월
+            </label>
+        </div>
+</div>
+
+
+        <hr class="my-4">
+        <div class="row">
+            <div class="col">
+                <button class="w-100 btn btn-primary btn-lg" type="submit">
+                    로그인</button>
+            </div>
+            <div class="col">
+                <button class="w-100 btn btn-secondary btn-lg"
+                        onclick="location.href='index.html'" th:onclick="|location.href='@{/}'|"
+                        type="button">취소</button>
+            </div>
+        </div>
+    </form>
+</div> <!-- /container -->
 </body>
 </html>

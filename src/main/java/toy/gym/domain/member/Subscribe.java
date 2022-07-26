@@ -1,11 +1,11 @@
 package toy.gym.domain.member;
 
 public enum Subscribe {
-    ONE("one",1),
-    THREE("three",3),
-    SIX("six",6),
-    NINE("nine",9),
-    YEAR("year",12);
+    ONE("1개월",1),
+    THREE("3개월",3),
+    SIX("6개월",6),
+    NINE("9개월",9),
+    YEAR("1년",12);
 
     private String month;
     private Integer value;
@@ -15,6 +15,10 @@ public enum Subscribe {
         this.value = value;
     }
     public Integer getDuration(){
-        return value*30;
+        return value;
+    }
+
+    public String getMonth() {
+        return month;
     }
 }
