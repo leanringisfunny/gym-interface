@@ -2,9 +2,11 @@ package toy.gym.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,12 +22,20 @@ import java.util.GregorianCalendar;
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/member")
+@Slf4j
 public class MemberServiceController {
     private final MemberRepository memberRepository;
 
-    @GetMapping("/add")
+   /* @GetMapping("/add")
     public String addForm(@ModelAttribute("signUpForm") SignUpForm signUpForm,Model model){
 
+        model.addAttribute("subscribeTypes",Subscribe.values());
+        return "member/addForm";
+    }*/
+
+    @GetMapping("/add")
+    public String addFORM(SignUpForm signUpForm,Model model){
+        model.addAttribute("signUpForm",new SignUpForm());
         model.addAttribute("subscribeTypes",Subscribe.values());
         return "member/addForm";
     }
@@ -38,16 +48,21 @@ public class MemberServiceController {
 
 
     @PostMapping("/add")
-    public String SignUp(@ModelAttribute("signUpForm") SignUpForm signUpForm,BindingResult bindingResult,Model model){
-        
+    public String SignUp( @ModelAttribute("signUpForm") SignUpForm signUpForm, BindingResult bindingResult, Model model){
         
         if( bindingResult.hasErrors() ) {
-            bindingResult.reject("sendingFailed","다시 입력해주십시오");
+           bindingResult.reject("sendingFailed","다시 입력해주십시오");
+       }
+
+        String name = signUpForm.getMemberName();
+        if(name==null){
+            return "redirect:/member/add";
         }
-        
-        String name = signUpForm.getName();
+        log.info("name={}",name);
         Long password = signUpForm.getPassword();
+        log.info("password={}",password);
         Subscribe subscribe = signUpForm.getSubscribe();
+        log.info("subscribe={}",subscribe);
         Integer duration = subscribe.getDuration();
 
 
@@ -64,20 +79,21 @@ public class MemberServiceController {
         System.out.println(min);
         System.out.println(sec);
 
+        
         Calendar cur = new GregorianCalendar(y, m, d, min, sec);
         time.add(Calendar.MONTH,duration);
 
         Member member = new Member(name,password,subscribe,cur,time);
-
         memberRepository.save(member);
+
+        log.info("name={}",member.getName());
         model.addAttribute("member",member);
-        return "member/members";
+        return "member/member";
     }
 
 
     @GetMapping("/members")
     public String membersForm(){
-
         return "meber/members";
     }
 

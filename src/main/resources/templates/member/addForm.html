@@ -29,32 +29,32 @@
 
 
     <!--    /*@thymesVar id="signUpForm" type="toy.gym.domain.form.SignUpForm"*/-->
+
     <form action="index.html" th:action th:object="${signUpForm}" method="post">
+<!--    input타입에는 name타입이 존재하지 않는다. ->text 컨트롤러에서 modelAttirbute를 통해 memberName porperty에 대해 계속 null값을 반환한 이유 -->
         <div>
-            <label for="name">이름 입력</label>
-            <input type="name" id="name" th:field="*{name}" class="form-control" >
-<!--            th:errorclass="field-error">-->
-            <!--            <div class="field-error" th:errors="password" />-->
+            <label for="memberName">이름 입력</label>
+            <input type="text" id="memberName" th:field="*{memberName}" class="form-control">
+            <!--            th:errorclass="field-error">-->
         </div>
 
         <div>
             <label for="password">비밀번호 입력</label>
             <input type="password" id="password" th:field="*{password}" class="form-control" th:errorclass="field-error">
-<!--                       field-error <div class="field-error" th:errors="password" />-->
+<!--            <div class="field-error" th:errors="password" />-->
         </div>
 
+        <div>
+            <!--/*@thymesVar id="subscribeTypes" type="toy.gym.domain.member.Subscribe[]"*/-->
+            <div> 구독권</div>
 
-<div>
-    <!--/*@thymesVar id="subscribeTypes" type="toy.gym.domain.member.Subscribe[]"*/-->
-        <div> 구독권</div>
-
-        <div th:each="type :${subscribeTypes}" class="form-check form-check-inline">
-            <input type="radio" th:field="*{subscribe}" th:value="${type.name()}" class="form-check-input">
-            <label th:for="${#ids.prev('subscribe')}" th:text="${type.month}" class="form-check-label">
-                1개월
-            </label>
+            <div th:each="type :${subscribeTypes}" class="form-check form-check-inline">
+                <input type="radio" th:field="*{subscribe}" th:value="${type.name()}" class="form-check-input">
+                <label th:for="${#ids.prev('subscribe')}" th:text="${type.month}" class="form-check-label">
+                    1개월
+                </label>
+            </div>
         </div>
-</div>
 
 
         <hr class="my-4">
