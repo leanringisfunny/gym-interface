@@ -11,13 +11,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import toy.gym.domain.form.MembersForm;
 import toy.gym.domain.form.SignUpForm;
 import toy.gym.domain.member.Member;
 import toy.gym.domain.member.Subscribe;
 import toy.gym.domain.repository.MemberRepository;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Controller
@@ -55,46 +57,72 @@ public class MemberServiceController {
        }
 
         String name = signUpForm.getMemberName();
-        if(name==null){
-            return "redirect:/member/add";
-        }
-        log.info("name={}",name);
         Long password = signUpForm.getPassword();
-        log.info("password={}",password);
         Subscribe subscribe = signUpForm.getSubscribe();
-        log.info("subscribe={}",subscribe);
         Integer duration = subscribe.getDuration();
 
 
-        Calendar time = Calendar.getInstance();
-        int y = time.get(Calendar.YEAR);
-        int m= time.get(Calendar.MONTH);
-        int d = time.get(Calendar.DAY_OF_MONTH);
-        int min = time.get(Calendar.MINUTE);
-        int sec = time.get(Calendar.SECOND);
+        String pattern="yyyy년 MM월 dd일 hh시 mm분 ss초";
+        //date객체로 오늘 날짜의 스트링 구하기 형식은 매개변수로 지정가능
+        Date today= new Date();
+        SimpleDateFormat sdf =new SimpleDateFormat(pattern, Locale.KOREA);
+        String todayString = sdf.format(today);
 
-        System.out.println(y);
-        System.out.println(m);
-        System.out.println(d);
-        System.out.println(min);
-        System.out.println(sec);
+        Calendar cal1 =Calendar.getInstance();
+        cal1.setTime(today);
+        //출력
+        System.out.println("todayString = " + todayString);
 
-        
-        Calendar cur = new GregorianCalendar(y, m, d, min, sec);
-        time.add(Calendar.MONTH,duration);
 
-        Member member = new Member(name,password,subscribe,cur,time);
+        //date객체 Calendar로 변환하기
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(today);
+
+        //캘린더에 날짜 더하기
+        cal2.add(Calendar.MONTH,subscribe.getDuration());
+        //데이트에 더한 캘린더 정보 넘겨주기
+        Date exDate = new Date(cal2.getTimeInMillis());
+        //만료일 구하기
+        SimpleDateFormat sdf2=new SimpleDateFormat(pattern,Locale.KOREA);
+        String exdate = sdf2.format(exDate);
+
+        //시간차 구하기
+        long difference = (cal2.getTimeInMillis() - cal1.getTimeInMillis())/(1000*60*60*24);
+
+
+        Member member = new Member(name,password,subscribe,todayString,exdate);
         memberRepository.save(member);
 
-        log.info("name={}",member.getName());
+        model.addAttribute("diff",difference);
         model.addAttribute("member",member);
         return "member/member";
     }
 
-
     @GetMapping("/members")
-    public String membersForm(){
-        return "meber/members";
+    public String showMembersList(Model model) throws ParseException {
+        List<MembersForm> list =new ArrayList<>();
+
+        List<Member> all = memberRepository.findAll();
+        int n= all.size();
+
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy년 MM월 dd일 hh시 mm분 ss초", Locale.KOREA);
+        Date today =new Date();
+        Calendar cal1= Calendar.getInstance();
+        cal1.setTime(today);
+        Calendar cal2 =Calendar.getInstance();
+
+        for(int i=0;i<n;i++){
+            String name = all.get(i).getName();
+            Long id = all.get(i).getId();
+            String exdate = all.get(i).getExdate();
+            cal2.setTime( sdf.parse(exdate) );
+            long difference = (cal1.getTimeInMillis() - cal2.getTimeInMillis())/(1000*60*60*24);
+            list.add(new MembersForm(id,name,difference));
+        }
+
+        model.addAttribute("items",list);
+        return "member/members";
     }
+
 
 }

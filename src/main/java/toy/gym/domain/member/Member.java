@@ -14,12 +14,12 @@ public class Member {
     private Long password;
     private Subscribe subscribe;
 
-    private Calendar initdate;
-    private Calendar exdate;
+    private String initdate;
+    private String exdate;
 
     public Member (){}
 
-    public Member( String name, Long password, Subscribe subscribe, Calendar initdate,Calendar exdate) {
+    public Member( String name, Long password, Subscribe subscribe, String initdate,String exdate) {
         this.name = name;
         this.password = password;
         this.subscribe = subscribe;
