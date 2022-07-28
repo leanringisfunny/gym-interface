@@ -116,7 +116,7 @@ public class MemberServiceController {
             Long id = all.get(i).getId();
             String exdate = all.get(i).getExdate();
             cal2.setTime( sdf.parse(exdate) );
-            long difference = (cal1.getTimeInMillis() - cal2.getTimeInMillis())/(1000*60*60*24);
+            long difference = (cal2.getTimeInMillis() - cal1.getTimeInMillis())/(1000*60*60*24);
             list.add(new MembersForm(id,name,difference));
         }
 
